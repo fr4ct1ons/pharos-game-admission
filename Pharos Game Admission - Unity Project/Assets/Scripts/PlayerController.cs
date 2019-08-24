@@ -8,7 +8,8 @@ using UnityEngine.InputSystem.Users;
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] int controllerNumber = 0;
-    [SerializeField] int speed;
+    [SerializeField] int speed, dashSpeed;
+    [SerializeField] float dashTime = 1.5f, dashCooldown = 2.0f;
 
     PlayerControls controls;
 
@@ -18,7 +19,7 @@ public class PlayerController : MonoBehaviour
     Rigidbody myRigidbody;
     Animator myAnimator;
     int bodyRotation = 1;
-    bool canMove = true;
+    bool canMove = true, doingDash = false, canDash = true;
 
     private void OnEnable()
     {
@@ -38,6 +39,7 @@ public class PlayerController : MonoBehaviour
         controls.Gameplay.Move.canceled += ctx => controllerLeftAnalog = Vector2.zero;
         controls.Gameplay.BasicAttack.performed += ctx => BasicAttack();
         controls.Gameplay.Quit.performed += ctx => Application.Quit();
+        controls.Gameplay.Dash.performed += ctx => ExecDash();
 
         controls.Gameplay.MoveLeft.performed += ctx => controllerLeftAnalog.x = -1.0f;
         controls.Gameplay.MoveRight.performed += ctx => controllerLeftAnalog.x = 1.0f;
@@ -59,14 +61,6 @@ public class PlayerController : MonoBehaviour
         else if (transform.eulerAngles.y >= 265 && transform.eulerAngles.y <= 275)
         {
             bodyRotation = -1;
-        }
-    }
-
-    void BasicAttack()
-    {
-        if (canMove)
-        {
-            myAnimator.SetTrigger("BasicPunch");
         }
     }
 
@@ -93,8 +87,47 @@ public class PlayerController : MonoBehaviour
             else
                 myAnimator.SetBool("Walking", false);
 
-            myRigidbody.MovePosition(transform.position + (transform.forward * GetAxisUni(controllerLeftAnalog.x) * speed * Time.deltaTime * bodyRotation));
+            
         }
+    }
+
+    private void FixedUpdate()
+    {
+        if (!doingDash)
+            myRigidbody.MovePosition(transform.position + (transform.forward * GetAxisUni(controllerLeftAnalog.x) * speed * Time.deltaTime * bodyRotation));
+        else
+        {
+            myRigidbody.MovePosition(transform.position + (transform.forward * dashSpeed * Time.deltaTime));
+        }
+    }
+
+    private void BasicAttack()
+    {
+        if (canMove)
+        {
+            myAnimator.SetTrigger("BasicPunch");
+        }
+    }
+
+    private void ExecDash()
+    {
+        if(canDash)
+        StartCoroutine(Dash());
+    }
+
+    private IEnumerator Dash()
+    {
+        doingDash = true;
+        canDash = false;
+        myRigidbody.useGravity = false;
+        myAnimator.SetBool("Dash", true);
+        myAnimator.SetTrigger("EnableAnyState");
+        yield return new WaitForSeconds(dashTime);
+        doingDash = false;
+        myAnimator.SetBool("Dash", false);
+        myRigidbody.useGravity = true;
+        yield return new WaitForSeconds(dashCooldown);
+        canDash = true;
     }
 
     private float GetAxisUni(string axis)

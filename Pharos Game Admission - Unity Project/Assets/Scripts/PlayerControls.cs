@@ -56,6 +56,14 @@ public class PlayerControls : IInputActionCollection
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Dash"",
+                    ""type"": ""Button"",
+                    ""id"": ""14936a65-55d9-40d4-b4a6-cec801901f85"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -135,6 +143,28 @@ public class PlayerControls : IInputActionCollection
                     ""action"": ""MoveLeft"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""55e24058-1cdf-4636-86f4-1dcc378f4c10"",
+                    ""path"": ""<Keyboard>/leftShift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Dash"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""00e44995-2634-4d21-972b-19b654a98fbc"",
+                    ""path"": ""<Gamepad>/buttonEast"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Dash"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -148,6 +178,7 @@ public class PlayerControls : IInputActionCollection
         m_Gameplay_Quit = m_Gameplay.GetAction("Quit");
         m_Gameplay_MoveRight = m_Gameplay.GetAction("MoveRight");
         m_Gameplay_MoveLeft = m_Gameplay.GetAction("MoveLeft");
+        m_Gameplay_Dash = m_Gameplay.GetAction("Dash");
     }
 
     ~PlayerControls()
@@ -202,6 +233,7 @@ public class PlayerControls : IInputActionCollection
     private readonly InputAction m_Gameplay_Quit;
     private readonly InputAction m_Gameplay_MoveRight;
     private readonly InputAction m_Gameplay_MoveLeft;
+    private readonly InputAction m_Gameplay_Dash;
     public struct GameplayActions
     {
         private PlayerControls m_Wrapper;
@@ -211,6 +243,7 @@ public class PlayerControls : IInputActionCollection
         public InputAction @Quit => m_Wrapper.m_Gameplay_Quit;
         public InputAction @MoveRight => m_Wrapper.m_Gameplay_MoveRight;
         public InputAction @MoveLeft => m_Wrapper.m_Gameplay_MoveLeft;
+        public InputAction @Dash => m_Wrapper.m_Gameplay_Dash;
         public InputActionMap Get() { return m_Wrapper.m_Gameplay; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -235,6 +268,9 @@ public class PlayerControls : IInputActionCollection
                 MoveLeft.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnMoveLeft;
                 MoveLeft.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnMoveLeft;
                 MoveLeft.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnMoveLeft;
+                Dash.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnDash;
+                Dash.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnDash;
+                Dash.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnDash;
             }
             m_Wrapper.m_GameplayActionsCallbackInterface = instance;
             if (instance != null)
@@ -254,6 +290,9 @@ public class PlayerControls : IInputActionCollection
                 MoveLeft.started += instance.OnMoveLeft;
                 MoveLeft.performed += instance.OnMoveLeft;
                 MoveLeft.canceled += instance.OnMoveLeft;
+                Dash.started += instance.OnDash;
+                Dash.performed += instance.OnDash;
+                Dash.canceled += instance.OnDash;
             }
         }
     }
@@ -265,5 +304,6 @@ public class PlayerControls : IInputActionCollection
         void OnQuit(InputAction.CallbackContext context);
         void OnMoveRight(InputAction.CallbackContext context);
         void OnMoveLeft(InputAction.CallbackContext context);
+        void OnDash(InputAction.CallbackContext context);
     }
 }
