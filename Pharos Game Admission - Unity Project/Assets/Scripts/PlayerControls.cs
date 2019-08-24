@@ -64,6 +64,14 @@ public class PlayerControls : IInputActionCollection
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Jump"",
+                    ""type"": ""Button"",
+                    ""id"": ""858e9846-4b8f-4b9a-b533-ba70be705e99"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -81,7 +89,7 @@ public class PlayerControls : IInputActionCollection
                 {
                     ""name"": """",
                     ""id"": ""cb883706-ab0f-4e5d-8b8e-f877e3d4fecc"",
-                    ""path"": ""<Gamepad>/buttonSouth"",
+                    ""path"": ""<Gamepad>/buttonWest"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -165,6 +173,28 @@ public class PlayerControls : IInputActionCollection
                     ""action"": ""Dash"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a16f2b2a-5700-4f02-b732-4348e1094492"",
+                    ""path"": ""<Keyboard>/upArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Jump"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""3e8502c9-51db-4b1a-b0a2-385cdaae3c62"",
+                    ""path"": ""<Gamepad>/buttonSouth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Jump"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -179,6 +209,7 @@ public class PlayerControls : IInputActionCollection
         m_Gameplay_MoveRight = m_Gameplay.GetAction("MoveRight");
         m_Gameplay_MoveLeft = m_Gameplay.GetAction("MoveLeft");
         m_Gameplay_Dash = m_Gameplay.GetAction("Dash");
+        m_Gameplay_Jump = m_Gameplay.GetAction("Jump");
     }
 
     ~PlayerControls()
@@ -234,6 +265,7 @@ public class PlayerControls : IInputActionCollection
     private readonly InputAction m_Gameplay_MoveRight;
     private readonly InputAction m_Gameplay_MoveLeft;
     private readonly InputAction m_Gameplay_Dash;
+    private readonly InputAction m_Gameplay_Jump;
     public struct GameplayActions
     {
         private PlayerControls m_Wrapper;
@@ -244,6 +276,7 @@ public class PlayerControls : IInputActionCollection
         public InputAction @MoveRight => m_Wrapper.m_Gameplay_MoveRight;
         public InputAction @MoveLeft => m_Wrapper.m_Gameplay_MoveLeft;
         public InputAction @Dash => m_Wrapper.m_Gameplay_Dash;
+        public InputAction @Jump => m_Wrapper.m_Gameplay_Jump;
         public InputActionMap Get() { return m_Wrapper.m_Gameplay; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -271,6 +304,9 @@ public class PlayerControls : IInputActionCollection
                 Dash.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnDash;
                 Dash.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnDash;
                 Dash.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnDash;
+                Jump.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnJump;
+                Jump.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnJump;
+                Jump.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnJump;
             }
             m_Wrapper.m_GameplayActionsCallbackInterface = instance;
             if (instance != null)
@@ -293,6 +329,9 @@ public class PlayerControls : IInputActionCollection
                 Dash.started += instance.OnDash;
                 Dash.performed += instance.OnDash;
                 Dash.canceled += instance.OnDash;
+                Jump.started += instance.OnJump;
+                Jump.performed += instance.OnJump;
+                Jump.canceled += instance.OnJump;
             }
         }
     }
@@ -305,5 +344,6 @@ public class PlayerControls : IInputActionCollection
         void OnMoveRight(InputAction.CallbackContext context);
         void OnMoveLeft(InputAction.CallbackContext context);
         void OnDash(InputAction.CallbackContext context);
+        void OnJump(InputAction.CallbackContext context);
     }
 }

@@ -10,16 +10,18 @@ public class PlayerController : MonoBehaviour
     [SerializeField] int controllerNumber = 0;
     [SerializeField] int speed, dashSpeed;
     [SerializeField] float dashTime = 1.5f, dashCooldown = 2.0f;
+    [SerializeField] Vector3 jumpDirection;
 
     PlayerControls controls;
 
     Vector2 controllerLeftAnalog;
     InputUser myUser;
-    Vector3 bufferVector;
+    Vector3 bufferVector, groundCheck;
     Rigidbody myRigidbody;
     Animator myAnimator;
     int bodyRotation = 1;
-    bool canMove = true, doingDash = false, canDash = true;
+    bool canMove = true, doingDash = false, canDash = true, isGrounded;
+    float distToGround;
 
     private void OnEnable()
     {
@@ -40,6 +42,7 @@ public class PlayerController : MonoBehaviour
         controls.Gameplay.BasicAttack.performed += ctx => BasicAttack();
         controls.Gameplay.Quit.performed += ctx => Application.Quit();
         controls.Gameplay.Dash.performed += ctx => ExecDash();
+        controls.Gameplay.Jump.performed += ctx => Jump();
 
         controls.Gameplay.MoveLeft.performed += ctx => controllerLeftAnalog.x = -1.0f;
         controls.Gameplay.MoveRight.performed += ctx => controllerLeftAnalog.x = 1.0f;
@@ -53,7 +56,7 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         bufferVector = transform.position;
-
+        distToGround = GetComponent<Collider>().bounds.extents.y;
         if (transform.eulerAngles.y >= 85.0f && transform.eulerAngles.y <= 95.0f)
         {
             bodyRotation = 1;
@@ -89,6 +92,15 @@ public class PlayerController : MonoBehaviour
 
             
         }
+
+        groundCheck = transform.position;
+        groundCheck.Set(groundCheck.x, groundCheck.y - distToGround, groundCheck.z);
+        if (Physics.CheckSphere(groundCheck, 0.2f))
+            isGrounded = true;
+        else
+            isGrounded = false;
+
+        myAnimator.SetBool("IsGrounded", isGrounded);
     }
 
     private void FixedUpdate()
@@ -115,6 +127,20 @@ public class PlayerController : MonoBehaviour
         StartCoroutine(Dash());
     }
 
+    private void Jump()
+    {
+        Debug.Log("Jumping.");
+        if (isGrounded)
+        {
+            myRigidbody.AddForce(jumpDirection);
+            myAnimator.SetTrigger("Jump");
+        }
+        else
+        {
+            Debug.Log("Player is on air");
+        }
+    }
+
     private IEnumerator Dash()
     {
         doingDash = true;
@@ -122,11 +148,15 @@ public class PlayerController : MonoBehaviour
         myRigidbody.useGravity = false;
         myAnimator.SetBool("Dash", true);
         myAnimator.SetTrigger("EnableAnyState");
+
         yield return new WaitForSeconds(dashTime);
+
         doingDash = false;
         myAnimator.SetBool("Dash", false);
         myRigidbody.useGravity = true;
+
         yield return new WaitForSeconds(dashCooldown);
+
         canDash = true;
     }
 
