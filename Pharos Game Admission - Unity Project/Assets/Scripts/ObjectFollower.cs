@@ -15,7 +15,6 @@ public class ObjectFollower : MonoBehaviour
         bufferVector = transform.position;
     }
 
-    // Update is called once per frame
     void Update()
     {
         if(objectToFollow)
