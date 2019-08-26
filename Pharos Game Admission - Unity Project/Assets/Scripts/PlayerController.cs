@@ -71,7 +71,7 @@ public class PlayerController : MonoBehaviour
     {
         if (canMove)
         {
-            if (GetAxisUni(controllerLeftAnalog.x) != bodyRotation && GetAxisUni(controllerLeftAnalog.x) != 0)
+            if (GetAxisUni(controllerLeftAnalog.x) != bodyRotation && GetAxisUni(controllerLeftAnalog.x) != 0 && canMove)
             {
                 transform.Rotate(0.0f, 180.0f, 0.0f);
             }
@@ -92,7 +92,7 @@ public class PlayerController : MonoBehaviour
 
             
         }
-
+        //Debug.Log(canMove);
         groundCheck = transform.position;
         groundCheck.Set(groundCheck.x, groundCheck.y - distToGround, groundCheck.z);
         if (Physics.CheckSphere(groundCheck, 0.1f))
@@ -105,12 +105,10 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (!doingDash)
+        if (!doingDash && canMove) // Regular movement
             myRigidbody.MovePosition(transform.position + (transform.forward * GetAxisUni(controllerLeftAnalog.x) * speed * Time.deltaTime * bodyRotation));
-        else
-        {
+        else if (doingDash) // Dash movement
             myRigidbody.MovePosition(transform.position + (transform.forward * dashSpeed * Time.deltaTime));
-        }
     }
 
     private void BasicAttack()

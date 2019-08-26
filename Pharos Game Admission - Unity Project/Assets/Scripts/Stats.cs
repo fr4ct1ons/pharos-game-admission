@@ -26,7 +26,8 @@ public class Stats : MonoBehaviour
         currentHp -= value;
 
         GetComponent<Rigidbody>().AddForce(knockback);
-
+        if (hpText)
+            hpText.SetText(currentHp.ToString() + "/" + maxHp.ToString());
         if (currentHp <= 0)
             Die();
     }
@@ -35,6 +36,8 @@ public class Stats : MonoBehaviour
         currentHp = value;
         if (hpText)
             hpText.SetText(currentHp.ToString() + "/" + maxHp.ToString());
+        if (currentHp <= 0)
+            Die();
     }
     public int GetCurrentHp() { return currentHp; }
     
