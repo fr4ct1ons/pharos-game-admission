@@ -95,7 +95,7 @@ public class PlayerController : MonoBehaviour
 
         groundCheck = transform.position;
         groundCheck.Set(groundCheck.x, groundCheck.y - distToGround, groundCheck.z);
-        if (Physics.CheckSphere(groundCheck, 0.2f))
+        if (Physics.CheckSphere(groundCheck, 0.1f))
             isGrounded = true;
         else
             isGrounded = false;
@@ -146,6 +146,7 @@ public class PlayerController : MonoBehaviour
         doingDash = true;
         canDash = false;
         myRigidbody.useGravity = false;
+        myRigidbody.velocity = Vector3.zero;
         myAnimator.SetBool("Dash", true);
         myAnimator.SetTrigger("EnableAnyState");
 

@@ -604,7 +604,7 @@ GameObject:
   - component: {fileID: 8359390457460179108}
   m_Layer: 0
   m_Name: vanguard_t_choonyung
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
