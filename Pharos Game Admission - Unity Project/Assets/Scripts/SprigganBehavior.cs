@@ -7,14 +7,21 @@ public class SprigganBehavior : BaseEnemyBehavior
 
     [Tooltip("Distance at which this enemy follows the player.")]
     [SerializeField] float followDistance;
+    [Tooltip("Distance at which this enemy starts to attack the player.")]
+    [SerializeField] float attackDistance;
 
     GameObject player;
     Rigidbody myRigidbody;
     Animator myAnimator;
+    Vector3 bufferVector;
     /// <summary>
-    /// Returns -1 if the player is behind the object or 1 if the player is ahead of the object.
+    /// equals -1 if the player is behind the object or 1 if the player is ahead of the object.
     /// </summary>
     int relativeRotation;
+    /// <summary>
+    /// Distance between the player and the enemy.
+    /// </summary>
+    float distanceFromPlayer;
 
     private void Awake()
     {
@@ -30,7 +37,8 @@ public class SprigganBehavior : BaseEnemyBehavior
     // Update is called once per frame
     void Update()
     {
-        if ((transform.position.x - player.transform.position.x) <= 0)
+        Debug.Log(relativeRotation);
+        if ((transform.position.x - player.transform.position.x) >= 0)
             relativeRotation = -1;
         else
             relativeRotation = 1;
@@ -38,9 +46,12 @@ public class SprigganBehavior : BaseEnemyBehavior
 
     private void FixedUpdate()
     {
-        if(Vector3.Distance(transform.position, player.transform.position) <= followDistance)
+        distanceFromPlayer = Vector3.Distance(transform.position, player.transform.position);
+        if (distanceFromPlayer <= followDistance && distanceFromPlayer >= attackDistance)
         {
             myRigidbody.MovePosition(transform.position + transform.forward * Time.deltaTime * speed);
         }
+        bufferVector.Set(0.0f, 90.0f * relativeRotation, 0.0f);
+        transform.eulerAngles = bufferVector;
     }
 }

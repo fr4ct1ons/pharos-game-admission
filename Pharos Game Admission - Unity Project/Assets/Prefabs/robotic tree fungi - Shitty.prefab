@@ -43,6 +43,7 @@ GameObject:
   - component: {fileID: 5881194560665669333}
   - component: {fileID: 840117596569533246}
   - component: {fileID: 1445223460156560815}
+  - component: {fileID: 8296172667647033268}
   m_Layer: 0
   m_Name: robotic tree fungi - Shitty
   m_TagString: Untagged
@@ -76,7 +77,7 @@ Animator:
   m_GameObject: {fileID: 670870671532593596}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: 92c959c0bf5cc1d458588a4e72499270, type: 3}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: e608fed0138cb3241a0650619170adba, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -99,6 +100,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 2
   followDistance: 5
+  attackDistance: 0
 --- !u!54 &1445223460156560815
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -115,6 +117,20 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 120
   m_CollisionDetection: 0
+--- !u!136 &8296172667647033268
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 670870671532593596}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.1306841
+  m_Height: 1.5587461
+  m_Direction: 1
+  m_Center: {x: -3.8970027e-17, y: 0.7678515, z: -0.012882724}
 --- !u!1 &1045937371401153385
 GameObject:
   m_ObjectHideFlags: 0

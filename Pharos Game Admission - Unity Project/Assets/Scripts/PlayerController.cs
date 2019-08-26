@@ -129,7 +129,7 @@ public class PlayerController : MonoBehaviour
 
     private void Jump()
     {
-        Debug.Log("Jumping.");
+        //Debug.Log("Jumping.");
         if (isGrounded)
         {
             myRigidbody.AddForce(jumpDirection);
@@ -137,7 +137,7 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            Debug.Log("Player is on air");
+            //Debug.Log("Player is on air");
         }
     }
 
