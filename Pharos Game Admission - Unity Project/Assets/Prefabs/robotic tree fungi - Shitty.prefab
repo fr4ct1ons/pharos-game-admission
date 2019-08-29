@@ -104,6 +104,8 @@ MonoBehaviour:
   followDistance: 10
   attackDistance: 1
   attackCooldown: 2
+  attackChance: 10
+  timeBetweenRandoms: 3
 --- !u!54 &1445223460156560815
 Rigidbody:
   m_ObjectHideFlags: 0

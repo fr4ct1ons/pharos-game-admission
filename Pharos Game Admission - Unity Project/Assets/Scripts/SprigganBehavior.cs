@@ -11,12 +11,16 @@ public class SprigganBehavior : BaseEnemyBehavior
     [SerializeField] float attackDistance;
     [Tooltip("Time between attacks.")]
     [SerializeField] float attackCooldown;
+    [Tooltip("Chance for the ranged attack to happen, between 0 and the inserted value. 0 to 5 means the attack will happen.")]
+    [SerializeField] float attackChance;
+    [SerializeField] float timeBetweenRandoms;
+    [SerializeField] GameObject damageCollider;
 
     GameObject player;
     Rigidbody myRigidbody;
     Animator myAnimator;
     Vector3 bufferVector;
-    bool canMove = true;
+    bool canMove = true, canCallCoroutine = true, hasCalled = false;
     /// <summary>
     /// equals -1 if the player is behind the object or 1 if the player is ahead of the object.
     /// </summary>
@@ -24,7 +28,7 @@ public class SprigganBehavior : BaseEnemyBehavior
     /// <summary>
     /// Distance between the player and the enemy.
     /// </summary>
-    float distanceFromPlayer;
+    float distanceFromPlayer, randomValue = 0.0f;
 
     private void Awake()
     {
@@ -49,22 +53,36 @@ public class SprigganBehavior : BaseEnemyBehavior
 
     private void FixedUpdate()
     {
-        
+
         bufferVector.Set(0.0f, 90.0f * relativeRotation, 0.0f);
         transform.eulerAngles = bufferVector;
 
         distanceFromPlayer = Vector3.Distance(transform.position, player.transform.position);
-        if (distanceFromPlayer <= followDistance && distanceFromPlayer >= attackDistance)
+        if (distanceFromPlayer <= followDistance && distanceFromPlayer >= attackDistance && canMove)
         {
             myRigidbody.MovePosition(transform.position + transform.forward * Time.deltaTime * speed);
+            StartCoroutine(GetRandomValue());
+            if (randomValue <= 5 && !hasCalled)
+            {
+                hasCalled = true;
+                StartCoroutine(TreeGrow());
+            }
         }
-        else if(distanceFromPlayer < attackDistance)
+        else if (distanceFromPlayer < attackDistance)
         {
-            if(canMove)
+            if (canMove)
             {
                 StartCoroutine(SporeSpray());
             }
         }
+    }
+
+    private IEnumerator TreeGrow()
+    {
+        myAnimator.SetTrigger("TreeGrow");
+        canMove = false;
+        yield return new WaitForSeconds(attackCooldown);
+        canMove = true;
     }
 
     private IEnumerator SporeSpray()
@@ -73,5 +91,25 @@ public class SprigganBehavior : BaseEnemyBehavior
         canMove = false;
         yield return new WaitForSeconds(attackCooldown);
         canMove = true;
+    }
+
+    private IEnumerator GetRandomValue()
+    {
+        if (canCallCoroutine)
+        {
+            randomValue = Random.Range(0, attackChance);
+            canCallCoroutine = false;
+            yield return new WaitForSeconds(timeBetweenRandoms);
+            canCallCoroutine = true;
+            hasCalled = false;
+        }
+    }
+
+    public void SetTreeAttack()
+    {
+        Vector3 treeVector = transform.position;
+        treeVector.Set(player.transform.position.x, treeVector.y, treeVector.z);
+        Debug.Log(treeVector);
+        damageCollider.transform.position = treeVector;
     }
 }
