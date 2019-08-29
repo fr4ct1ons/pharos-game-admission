@@ -109,7 +109,7 @@ public class SprigganBehavior : BaseEnemyBehavior
     {
         Vector3 treeVector = transform.position;
         treeVector.Set(player.transform.position.x, treeVector.y, treeVector.z);
-        Debug.Log(treeVector);
         damageCollider.transform.position = treeVector;
+        Debug.Log(damageCollider.transform.position);
     }
 }
