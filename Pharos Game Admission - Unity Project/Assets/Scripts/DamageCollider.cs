@@ -13,7 +13,7 @@ public class DamageCollider : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (!other.gameObject.Equals(owner))
+        if (!owner || !other.gameObject.Equals(owner))
             DealDamage(other.gameObject);
     }
 
@@ -22,7 +22,11 @@ public class DamageCollider : MonoBehaviour
         if (target.GetComponent<Stats>())
         {
             target.GetComponent<Stats>().DealDamage(damageToDeal, knockback);
-            if (transform.parent.eulerAngles.y >= 265 && transform.eulerAngles.y <= 275)
+            if(GetComponent<Projectile>())
+            {
+                Destroy(gameObject);
+            }
+            else if (transform.parent.eulerAngles.y >= 265 && transform.eulerAngles.y <= 275)
             {
                 knockback.x *= -1;
             }

@@ -72,6 +72,14 @@ public class PlayerControls : IInputActionCollection
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Shoot"",
+                    ""type"": ""Button"",
+                    ""id"": ""f89ea5c7-a54e-440f-aea1-1c18abcfa3dc"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -166,7 +174,7 @@ public class PlayerControls : IInputActionCollection
                 {
                     ""name"": """",
                     ""id"": ""00e44995-2634-4d21-972b-19b654a98fbc"",
-                    ""path"": ""<Gamepad>/buttonEast"",
+                    ""path"": ""<Gamepad>/buttonNorth"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -195,6 +203,28 @@ public class PlayerControls : IInputActionCollection
                     ""action"": ""Jump"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""bca4d8a6-5f7c-4141-854b-b50c9448a064"",
+                    ""path"": ""<Gamepad>/buttonEast"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Shoot"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a20fda46-001f-41f6-bdfc-fe6ac8a47e33"",
+                    ""path"": ""<Keyboard>/x"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Shoot"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -210,6 +240,7 @@ public class PlayerControls : IInputActionCollection
         m_Gameplay_MoveLeft = m_Gameplay.GetAction("MoveLeft");
         m_Gameplay_Dash = m_Gameplay.GetAction("Dash");
         m_Gameplay_Jump = m_Gameplay.GetAction("Jump");
+        m_Gameplay_Shoot = m_Gameplay.GetAction("Shoot");
     }
 
     ~PlayerControls()
@@ -266,6 +297,7 @@ public class PlayerControls : IInputActionCollection
     private readonly InputAction m_Gameplay_MoveLeft;
     private readonly InputAction m_Gameplay_Dash;
     private readonly InputAction m_Gameplay_Jump;
+    private readonly InputAction m_Gameplay_Shoot;
     public struct GameplayActions
     {
         private PlayerControls m_Wrapper;
@@ -277,6 +309,7 @@ public class PlayerControls : IInputActionCollection
         public InputAction @MoveLeft => m_Wrapper.m_Gameplay_MoveLeft;
         public InputAction @Dash => m_Wrapper.m_Gameplay_Dash;
         public InputAction @Jump => m_Wrapper.m_Gameplay_Jump;
+        public InputAction @Shoot => m_Wrapper.m_Gameplay_Shoot;
         public InputActionMap Get() { return m_Wrapper.m_Gameplay; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -307,6 +340,9 @@ public class PlayerControls : IInputActionCollection
                 Jump.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnJump;
                 Jump.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnJump;
                 Jump.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnJump;
+                Shoot.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnShoot;
+                Shoot.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnShoot;
+                Shoot.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnShoot;
             }
             m_Wrapper.m_GameplayActionsCallbackInterface = instance;
             if (instance != null)
@@ -332,6 +368,9 @@ public class PlayerControls : IInputActionCollection
                 Jump.started += instance.OnJump;
                 Jump.performed += instance.OnJump;
                 Jump.canceled += instance.OnJump;
+                Shoot.started += instance.OnShoot;
+                Shoot.performed += instance.OnShoot;
+                Shoot.canceled += instance.OnShoot;
             }
         }
     }
@@ -345,5 +384,6 @@ public class PlayerControls : IInputActionCollection
         void OnMoveLeft(InputAction.CallbackContext context);
         void OnDash(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
+        void OnShoot(InputAction.CallbackContext context);
     }
 }

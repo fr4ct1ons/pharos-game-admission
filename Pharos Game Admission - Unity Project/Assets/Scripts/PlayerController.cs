@@ -11,6 +11,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] int speed, dashSpeed;
     [SerializeField] float dashTime = 1.5f, dashCooldown = 2.0f;
     [SerializeField] Vector3 jumpDirection;
+    [SerializeField] GameObject projectile;
 
     PlayerControls controls;
 
@@ -43,6 +44,7 @@ public class PlayerController : MonoBehaviour
         controls.Gameplay.Quit.performed += ctx => Application.Quit();
         controls.Gameplay.Dash.performed += ctx => ExecDash();
         controls.Gameplay.Jump.performed += ctx => Jump();
+        controls.Gameplay.Shoot.performed += ctx => Shoot();
 
         controls.Gameplay.MoveLeft.performed += ctx => controllerLeftAnalog.x = -1.0f;
         controls.Gameplay.MoveRight.performed += ctx => controllerLeftAnalog.x = 1.0f;
@@ -136,6 +138,22 @@ public class PlayerController : MonoBehaviour
         else
         {
             //Debug.Log("Player is on air");
+        }
+    }
+
+    public void Shoot()
+    {
+        myAnimator.SetTrigger("Shoot");
+    }
+
+    public void ShootProjectile()
+    {
+        if (canMove)
+        {
+            Vector3 projectileVector = transform.position;
+            projectileVector.Set(projectileVector.x, projectileVector.y + 1, projectileVector.z);
+            GameObject bufferBullet = Instantiate(projectile, projectileVector, transform.rotation);
+            Destroy(bufferBullet, 5.0f);
         }
     }
 
